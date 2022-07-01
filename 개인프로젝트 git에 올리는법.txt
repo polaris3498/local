@@ -1,0 +1,12 @@
+git config --global user.name ""
+git config --global user.email ""
+
+git remote remove origin
+git remote add origin   git 주소 
+
+git pull origin main
+git init
+git add .
+git commit -m ""
+git push origin +main
+

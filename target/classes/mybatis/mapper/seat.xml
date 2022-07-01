@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.goodee.gdlibrary.mapper.SeatMapper">
+	
+	<select id="selectSeatList" parameterType="List" resultType="SeatDTO">
+		SELECT SEAT_NO, MEMBER_NO, SEAT_STATUS, SEAT_DATE
+		  FROM SEAT
+		 ORDER BY SEAT_NO
+	</select>
+
+	<select id="selectSeatByNo" parameterType="Long" resultType="SeatDTO">
+		SELECT SEAT_NO, MEMBER_NO, SEAT_STATUS, SEAT_DATE
+		  FROM SEAT
+		 WHERE SEAT_NO = #{seatNo}
+	</select>
+	
+	<update id="updateUpSeatStatus" parameterType="Long">
+		UPDATE SEAT
+		   SET SEAT_STATUS = 2, SEAT_DATE = SYSTIMESTAMP
+		 WHERE SEAT_NO = #{seatNo}
+	</update>
+	
+	<update id="updateDownSeatStatus" parameterType="Long">
+		UPDATE SEAT
+		   SET SEAT_STATUS = 1, MEMBER_NO = NULL, SEAT_DATE = NULL
+		 WHERE MEMBER_NO = #{memberNo}
+	</update>
+	
+	<select id="selectSeatById" parameterType="String" resultType="SeatDTO">
+		SELECT S.SEAT_NO, M.MEMBER_NAME
+		  FROM SEAT S INNER JOIN MEMBER M
+		    ON S.MEMBER_NO = M.MEMBER_NO
+		 WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<update id="updateDownSeatStatusByScheduled">
+		 <![CDATA[
+			UPDATE SEAT
+	           SET MEMBER_NO = NULL, SEAT_STATUS = 1, SEAT_DATE = NULL
+	         WHERE SEAT_DATE + (INTERVAL '2' hour) < SYSTIMESTAMP
+         ]]>
+	</update>
+	
+	<insert id="insertSeatInfo" parameterType="Long">
+		INSERT INTO SEAT_INFO
+		  	(SEAT_INFO_NO, MEMBER_NO, SEAT_NO, SEAT_DATE)
+		 VALUES
+		 	(SEAT_INFO_SEQ.NEXTVAL, NULL, #{seatNo}, SYSTIMESTAMP)
+		
+	</insert>
+	
+	<update id="updateRandomCode" parameterType="SeatDTO">
+		UPDATE SEAT
+		   SET SEAT_CODE = #{seatCode}
+		 WHERE SEAT_NO = #{seatNo}
+	</update>
+
+</mapper>
